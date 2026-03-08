@@ -24,7 +24,7 @@ jobs:
       - name: Deploy to enricortan.github.io
         uses: cpina/github-action-push-to-another-repository@main
         env:
-          SSH_DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+          API_TOKEN_GITHUB: ${{ secrets.DEPLOY_KEY }}
         with:
           source-directory: dist
           destination-github-username: enricortan
