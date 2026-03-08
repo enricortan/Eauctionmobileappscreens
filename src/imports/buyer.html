@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eAuction — Buyer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F7F8FA; --surface: #FFFFFF; --border: #EAEDF2; --border-strong: #D0D5DD;
+  --text: #0D1117; --text-mid: #5C6472; --text-soft: #9BA3AF;
+  --accent: #1A56DB; --accent-soft: #EEF3FD;
+  --green: #0C9E6A; --green-soft: #EDFAF4;
+  --red: #DC2626; --red-soft: #FEF2F2;
+  --amber: #D97706; --amber-soft: #FFFBEB;
+  --purple: #7C3AED; --purple-soft: #F5F3FF;
+}
+body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #ECEEF2; min-height: 100vh; padding: 40px 20px 80px; display: flex; flex-direction: column; align-items: center; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.page-header { text-align: center; margin-bottom: 48px; }
+.page-eyebrow { font-size: 11px; color: var(--text-soft); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+.page-title { font-size: 30px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.page-sub { font-size: 14px; color: var(--text-mid); margin-top: 6px; }
+
+.frame-section { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 16px; }
+.frame-label { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; color: var(--text-soft); text-transform: uppercase; }
+.frame-sublabel { font-size: 12px; color: var(--text-mid); margin-top: -8px; }
+
+.phone { width: 375px; background: var(--bg); border-radius: 0; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.08); min-height: 812px; display: flex; flex-direction: column; position: relative; }
+
+.screen-outer { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+.screen { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.screen.slide-in-r { animation: sIR 0.32s cubic-bezier(0.4,0,0.2,1) forwards; }
+.screen.slide-in-l { animation: sIL 0.32s cubic-bezier(0.4,0,0.2,1) forwards; }
+@keyframes sIR { from{transform:translateX(100%)} to{transform:translateX(0)} }
+@keyframes sIL { from{transform:translateX(-100%)} to{transform:translateX(0)} }
+
+.s-header { background: var(--surface); flex-shrink: 0; }
+.s-body { flex: 1; overflow-y: auto; background: var(--bg); padding: 20px 20px 0; scrollbar-width: none; }
+.s-body::-webkit-scrollbar { display: none; }
+.s-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 12px 20px 32px; flex-shrink: 0; }
+.divider { height: 1px; background: var(--border); flex-shrink: 0; }
+
+.lbl { font-size: 11px; font-weight: 600; color: var(--text-soft); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+.card-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.card-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 20px; }
+.chip { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--red); margin-right: 5px; animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+.step-bar { display: flex; align-items: center; padding: 14px 20px; background: var(--surface); }
+.step-node { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.step-circle { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; border: 2px solid; transition: all 0.3s; }
+.step-circle.done   { background: var(--green); border-color: var(--green); color: white; }
+.step-circle.active { background: var(--accent); border-color: var(--accent); color: white; }
+.step-circle.todo   { background: var(--bg); border-color: var(--border); color: var(--text-soft); }
+.step-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; white-space: nowrap; }
+.step-line { flex: 1; height: 2px; margin: 0 4px 14px; transition: background 0.3s; }
+
+.card { background: var(--surface); border-radius: 16px; border: 1.5px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.field { margin-bottom: 14px; }
+.field:last-child { margin-bottom: 0; }
+.ios-input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; outline: none; transition: border 0.15s; }
+.ios-input:focus { border-color: var(--accent); }
+.ios-input::placeholder { color: var(--text-soft); }
+textarea.ios-input { height: 68px; resize: none; }
+select.ios-input { cursor: pointer; }
+
+.toggle-wrap { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.toggle-wrap:last-child { border-bottom: none; }
+.toggle-info { flex: 1; }
+.toggle-info .t-label { font-size: 13px; font-weight: 500; color: var(--text); }
+.toggle-info .t-sub   { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+.toggle { width: 44px; height: 26px; border-radius: 13px; position: relative; flex-shrink: 0; transition: background 0.2s; }
+.toggle.on  { background: var(--accent); }
+.toggle.off { background: var(--border); }
+.toggle::after { content:''; position:absolute; top:3px; width:20px; height:20px; border-radius:50%; background:white; box-shadow:0 1px 3px rgba(0,0,0,0.2); transition:left 0.2s; }
+.toggle.on::after  { left: 21px; }
+.toggle.off::after { left: 3px; }
+
+.dur-group { display: flex; gap: 8px; }
+.dur-pill { flex:1; padding:9px 0; border-radius:10px; font-size:12px; font-weight:600; cursor:pointer; border:1.5px solid var(--border); background:var(--bg); color:var(--text-mid); font-family:inherit; transition:all 0.15s; }
+.dur-pill.active { border-color:var(--accent); background:var(--accent-soft); color:var(--accent); }
+
+.kv-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:12px; }
+.kv-row:last-child { border-bottom:none; }
+.kv-key { color:var(--text-mid); }
+.kv-val { font-weight:600; color:var(--text); text-align:right; max-width:60%; }
+
+.btn { border:none; border-radius:12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; padding:12px; transition:opacity 0.15s; }
+.btn:active { opacity:0.8; }
+.btn-primary { background:var(--accent); color:white; }
+.btn-green   { background:var(--green); color:white; }
+.btn-ghost   { background:var(--bg); color:var(--text); border:1.5px solid var(--border); }
+.btn-row { display:flex; gap:8px; }
+.btn-row .btn { flex:1; }
+
+.item-card { background:var(--surface); border-radius:14px; border:1.5px solid var(--border); padding:12px 14px; display:flex; align-items:flex-start; gap:12px; margin-bottom:8px; }
+.item-num  { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+.item-body { flex:1; }
+.item-name { font-size:13px; font-weight:600; color:var(--text); }
+.item-spec { font-size:11px; color:var(--text-soft); margin-top:2px; }
+.item-chips { display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
+
+.sup-card { background:var(--surface); border-radius:12px; border:1.5px solid var(--border); padding:12px 14px; display:flex; align-items:center; gap:12px; margin-bottom:8px; }
+.sup-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0; }
+
+.rank-card { background:var(--surface); border-radius:16px; border:1.5px solid var(--border); overflow:hidden; cursor:pointer; transition:border 0.2s; margin-bottom:8px; }
+.rank-card.open { border-color:var(--accent); }
+.rank-head { display:flex; align-items:center; padding:14px 16px; gap:12px; }
+.rank-num-box { width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; flex-shrink:0; }
+.rank-body { flex:1; }
+.rank-name { font-size:14px; font-weight:600; color:var(--text); }
+.rank-bids { font-size:11px; color:var(--text-soft); margin-top:1px; }
+.rank-amount { font-size:17px; font-weight:700; }
+.rank-pct { font-size:11px; color:var(--green); margin-top:1px; }
+.rank-chevron { font-size:13px; color:var(--text-soft); margin-left:4px; transition:transform 0.2s; }
+.rank-chevron.open { transform:rotate(180deg); }
+.rank-hist-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); }
+.rank-hist-row:last-child { border-bottom:none; }
+
+.item-monitor { background:var(--surface); border-radius:16px; border:1.5px solid var(--border); padding:14px 16px; margin-bottom:8px; }
+.im-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; }
+.im-name { font-size:13px; font-weight:600; color:var(--text); }
+.im-spec { font-size:11px; color:var(--text-soft); margin-top:2px; }
+.im-best-val { font-size:15px; font-weight:700; color:var(--green); }
+.im-best-lbl { font-size:10px; color:var(--green); }
+.bar-row { display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.bar-name { font-size:11px; color:var(--text-mid); width:72px; flex-shrink:0; }
+.bar-track { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.bar-fill { height:100%; border-radius:3px; }
+.bar-val { font-size:11px; font-weight:600; color:var(--text); width:52px; text-align:right; flex-shrink:0; }
+
+.timer-box { background:var(--amber-soft); border:1.5px solid var(--amber); border-radius:14px; padding:7px 12px; text-align:center; min-width:62px; flex-shrink:0; }
+.timer-box.urgent { background:var(--red-soft); border-color:var(--red); }
+.timer-label { font-size:9px; font-weight:700; letter-spacing:1.5px; margin-bottom:1px; color:var(--amber); }
+.timer-box.urgent .timer-label { color:var(--red); }
+.timer-val { font-size:20px; font-weight:800; line-height:1; color:var(--amber); font-variant-numeric:tabular-nums; }
+.timer-box.urgent .timer-val { color:var(--red); }
+
+.m-tabs { display:flex; }
+.m-tab { flex:1; padding:12px 0; border:none; background:transparent; cursor:pointer; font-size:13px; font-family:inherit; border-bottom:2px solid transparent; color:var(--text-soft); transition:all 0.15s; }
+.m-tab.active { font-weight:600; color:var(--text); border-bottom-color:var(--text); }
+
+.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:flex-end; z-index:50; }
+.modal-sheet { width:100%; background:var(--surface); border-radius:28px 28px 0 0; padding:20px 20px 40px; }
+.modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+.modal-title { font-size:18px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.modal-sub { font-size:13px; color:var(--text-mid); margin-bottom:18px; }
+.action-btn { width:100%; padding:13px 16px; margin-bottom:8px; border-radius:14px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:13px; font-weight:500; cursor:pointer; font-family:inherit; text-align:left; }
+.action-btn:hover { background:#f0f2f8; }
+
+.launch-screen { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px; gap:16px; background:var(--bg); }
+.launch-icon { width:72px; height:72px; border-radius:24px; background:var(--green-soft); display:flex; align-items:center; justify-content:center; font-size:32px; }
+.launch-title { font-size:20px; font-weight:700; color:var(--text); text-align:center; }
+.launch-sub { font-size:13px; color:var(--text-mid); text-align:center; line-height:1.5; }
+.dots-row { display:flex; gap:6px; margin-top:8px; }
+.dot { width:8px; height:8px; border-radius:4px; background:var(--accent); }
+.dot:nth-child(1) { animation:dotAnim 1.2s 0s infinite; }
+.dot:nth-child(2) { animation:dotAnim 1.2s 0.2s infinite; }
+.dot:nth-child(3) { animation:dotAnim 1.2s 0.4s infinite; }
+@keyframes dotAnim { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+
+.notice { border-radius:14px; padding:12px 14px; display:flex; gap:10px; margin-bottom:10px; }
+.notice.amber { background:var(--amber-soft); border:1px solid rgba(217,119,6,0.25); }
+.notice-text { font-size:12px; color:var(--amber); }
+
+.flow-map { width:375px; padding:14px 20px; background:white; border:1px solid var(--border); }
+.flow-map-label { font-size:10px; font-weight:600; color:var(--text-soft); letter-spacing:1px; margin-bottom:10px; }
+.flow-steps { display:flex; align-items:center; overflow-x:auto; }
+.flow-step { padding:4px 8px; border-radius:6px; font-size:10px; font-weight:600; white-space:nowrap; }
+.flow-arrow { flex:1; height:1px; background:var(--border); min-width:4px; }
+
+.section-bridge { display:flex; flex-direction:column; align-items:center; margin:32px 0; gap:0; }
+.bridge-line { width:2px; height:36px; background:var(--border); }
+.bridge-label { background:var(--border); color:var(--text-soft); font-size:10px; font-weight:700; letter-spacing:1.5px; padding:4px 14px; border-radius:20px; margin:6px 0; }
+
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-eyebrow">eAuction · Mobile App</div>
+  <div class="page-title">Buyer Prototype</div>
+  <div class="page-sub">Company ABC — IT Equipment Procurement</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 1 — CREATE AUCTION
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🧑‍💼 Buyer — 1. Create Auction</div>
+  <div class="frame-sublabel">Steps: Details → Items → Suppliers → Review & Launch</div>
+
+  <div class="phone">
+    <div class="s-header" id="create-header">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px 20px">
+        <div style="width:32px;height:32px;border-radius:8px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:16px">📋</div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:var(--text)">New Auction</div>
+          <div style="font-size:11px;color:var(--text-soft)" id="create-step-label">Step 1 of 4</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="step-bar" id="step-bar"></div>
+      <div class="divider"></div>
+    </div>
+
+    <div class="screen-outer">
+      <!-- S0: Details -->
+      <div class="screen" id="create-s0">
+        <div class="s-body">
+          <div class="card-title" style="margin-bottom:4px">Auction Details</div>
+          <div class="card-sub">Set the basic information for this auction</div>
+          <div class="card">
+            <div class="field"><div class="lbl">Auction Title</div><input class="ios-input" id="f-title" value="IT Equipment Procurement"></div>
+            <div class="field"><div class="lbl">Reference ID</div><input class="ios-input" id="f-ref" value="AUC-2024-0892"></div>
+            <div class="field"><div class="lbl">Description (optional)</div><textarea class="ios-input" placeholder="Context for suppliers…"></textarea></div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">Schedule</div>
+            <div class="field"><div class="lbl">End Date &amp; Time</div><input class="ios-input" type="datetime-local" value="2024-12-20T14:00"></div>
+            <div class="field" style="margin-bottom:0">
+              <div class="lbl">Duration</div>
+              <div class="dur-group" id="dur-group">
+                <button class="dur-pill" onclick="selDur(this)">1 hr</button>
+                <button class="dur-pill active" onclick="selDur(this)">2 hrs</button>
+                <button class="dur-pill" onclick="selDur(this)">4 hrs</button>
+                <button class="dur-pill" onclick="selDur(this)">Custom</button>
+              </div>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom:20px">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px">Auction Rules</div>
+            <div class="toggle-wrap" onclick="flipToggle('t1')"><div class="toggle-info"><div class="t-label">Show live ranking to suppliers</div><div class="t-sub">Suppliers can see their rank</div></div><div class="toggle on" id="t1"></div></div>
+            <div class="toggle-wrap" onclick="flipToggle('t2')"><div class="toggle-info"><div class="t-label">Show best bid amount</div><div class="t-sub">Suppliers can see the leading bid</div></div><div class="toggle on" id="t2"></div></div>
+            <div class="toggle-wrap" onclick="flipToggle('t3')"><div class="toggle-info"><div class="t-label">Auto-extend on last-minute bids</div><div class="t-sub">5-min extension if bid in final 2 min</div></div><div class="toggle off" id="t3"></div></div>
+          </div>
+        </div>
+        <div class="s-footer"><button class="btn btn-primary" style="width:100%" onclick="buyerNext()">Continue to Items →</button></div>
+      </div>
+
+      <!-- S1: Items -->
+      <div class="screen hidden" id="create-s1">
+        <div class="s-body">
+          <div class="card-title" style="margin-bottom:4px">Auction Items</div>
+          <div class="card-sub">Add the items suppliers will bid on</div>
+          <div id="items-list"></div>
+          <div id="total-row" style="background:var(--green-soft);border-radius:12px;padding:10px 14px;border:1px solid rgba(12,158,106,0.2);display:none;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:12px;color:var(--green);font-weight:600">Total Budget</span>
+            <span style="font-size:13px;font-weight:700;color:var(--green)" id="items-total"></span>
+          </div>
+          <div id="add-item-form" class="hidden" style="background:var(--surface);border-radius:16px;border:1.5px solid var(--accent);padding:16px;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px">New Item</div>
+            <div class="field"><div class="lbl">Item Name</div><input class="ios-input" id="ni-name" placeholder="e.g. Laptops"></div>
+            <div class="field"><div class="lbl">Specifications</div><input class="ios-input" id="ni-spec" placeholder="e.g. 4GB RAM, 1TB HDD"></div>
+            <div style="display:flex;gap:8px;margin-bottom:14px">
+              <div style="flex:1"><div class="lbl">Quantity</div><input class="ios-input" type="number" id="ni-qty" placeholder="100"></div>
+              <div style="flex:1"><div class="lbl">Unit</div><select class="ios-input" id="ni-unit"><option>units</option><option>pcs</option><option>sets</option><option>licenses</option><option>years</option></select></div>
+            </div>
+            <div class="field"><div class="lbl">Target Budget (optional)</div><input class="ios-input" type="number" id="ni-budget" placeholder="55000"></div>
+            <div class="btn-row">
+              <button class="btn btn-primary" onclick="addItem()">Add Item</button>
+              <button class="btn btn-ghost" onclick="hideAddItem()" style="flex:0;padding:11px 16px">Cancel</button>
+            </div>
+          </div>
+          <button class="btn" id="add-item-btn" onclick="showAddItem()" style="width:100%;background:transparent;border:1.5px dashed var(--border-strong);color:var(--accent);margin-bottom:20px">+ Add Item</button>
+        </div>
+        <div class="s-footer">
+          <div class="btn-row">
+            <button class="btn btn-ghost" style="flex:0;padding:12px 20px" onclick="buyerBack()">← Back</button>
+            <button class="btn btn-primary" onclick="buyerNext()">Continue to Suppliers →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- S2: Suppliers -->
+      <div class="screen hidden" id="create-s2">
+        <div class="s-body">
+          <div class="card-title" style="margin-bottom:4px">Invite Suppliers</div>
+          <div class="card-sub">Add suppliers who will participate</div>
+          <div class="card" style="margin-bottom:10px">
+            <div class="lbl">Supplier Name or Email</div>
+            <div style="display:flex;gap:8px;margin-bottom:12px">
+              <input class="ios-input" id="sup-email" placeholder="name@supplier.com" style="flex:1" onkeydown="if(event.key==='Enter')addSupplier()">
+              <button class="btn btn-primary" style="flex:0;padding:10px 16px" onclick="addSupplier()">Add</button>
+            </div>
+            <div style="font-size:11px;color:var(--text-soft);margin-bottom:8px">Quick add</div>
+            <div id="suggestions" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+          </div>
+          <div id="sup-list"></div>
+        </div>
+        <div class="s-footer">
+          <div class="btn-row">
+            <button class="btn btn-ghost" style="flex:0;padding:12px 20px" onclick="buyerBack()">← Back</button>
+            <button class="btn btn-primary" onclick="buyerNext()">Review &amp; Launch →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- S3: Review -->
+      <div class="screen hidden" id="create-s3">
+        <div class="s-body">
+          <div class="card-title" style="margin-bottom:4px">Review &amp; Launch</div>
+          <div class="card-sub">Confirm everything before going live</div>
+          <div class="card">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span>📋</span><span class="card-title">Auction Details</span></div>
+            <div class="kv-row"><span class="kv-key">Title</span><span class="kv-val" id="rv-title"></span></div>
+            <div class="kv-row"><span class="kv-key">Reference</span><span class="kv-val" id="rv-ref"></span></div>
+            <div class="kv-row"><span class="kv-key">Duration</span><span class="kv-val" id="rv-dur"></span></div>
+            <div class="kv-row"><span class="kv-key">Ends</span><span class="kv-val">Dec 20, 2024 2:00 PM</span></div>
+          </div>
+          <div class="card">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span>📦</span><span class="card-title" id="rv-items-title">Items</span></div>
+            <div id="rv-items"></div>
+          </div>
+          <div class="card">
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:12px"><span>👥</span><span class="card-title" id="rv-sups-title">Suppliers</span></div>
+            <div id="rv-sups"></div>
+          </div>
+          <div style="background:var(--accent-soft);border-radius:14px;padding:12px 16px;border:1px solid rgba(26,86,219,0.2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:13px;color:var(--accent);font-weight:600">Total Target Budget</span>
+            <span style="font-size:15px;font-weight:800;color:var(--accent)" id="rv-total"></span>
+          </div>
+          <div class="notice amber"><span>⚠️</span><div class="notice-text">Suppliers will be notified immediately. Details cannot be changed after launch.</div></div>
+        </div>
+        <div class="s-footer">
+          <div class="btn-row">
+            <button class="btn btn-ghost" style="flex:0;padding:12px 20px" onclick="buyerBack()">← Back</button>
+            <button class="btn btn-green" onclick="launchAuction()">🚀 Launch Auction</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Launch success -->
+      <div class="screen hidden" id="create-launched">
+        <div class="launch-screen">
+          <div class="launch-icon">🚀</div>
+          <div class="launch-title">Auction Launched!</div>
+          <div class="launch-sub">Suppliers have been notified.<br>Auction is now live.</div>
+          <div class="dots-row"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phone 1 -->
+
+  <div class="flow-map">
+    <div class="flow-map-label">CREATE FLOW</div>
+    <div class="flow-steps">
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Details</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Items</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Suppliers</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Review</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">🚀 Launch</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bridge -->
+<div class="section-bridge">
+  <div class="bridge-line"></div>
+  <div class="bridge-label">AUCTION GOES LIVE</div>
+  <div class="bridge-line"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 2 — MONITOR AUCTION
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🧑‍💼 Buyer — 2. Monitor Auction</div>
+  <div class="frame-sublabel">Live dashboard — rankings, bids by item, extend, award</div>
+
+  <div class="phone">
+    <div class="s-header">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 12px">
+        <div style="width:32px;height:32px;border-radius:8px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:16px">📊</div>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--text-soft);letter-spacing:1px">LIVE AUCTION</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text)">IT Equipment Procurement</div>
+        </div>
+        <div class="timer-box" id="m-timer-box">
+          <div class="timer-label">LEFT</div>
+          <div class="timer-val" id="m-timer">47:23</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:6px;padding:0 20px 12px">
+        <span class="chip" style="background:var(--accent-soft);color:var(--accent)">3 Suppliers</span>
+        <span class="chip" style="background:var(--border);color:var(--text-mid)">8 Bids</span>
+        <span class="chip" style="background:var(--green-soft);color:var(--green)"><span class="live-dot"></span>Active</span>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;padding:14px 20px">
+        <div style="flex:1;padding-right:16px">
+          <div class="lbl" style="margin-bottom:4px">BEST TOTAL BID</div>
+          <div style="font-size:26px;font-weight:700;color:var(--green)">₱649K</div>
+          <div style="font-size:11px;color:var(--text-mid);margin-top:3px">Supplier Y · leading</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="flex:1;padding-left:16px">
+          <div class="lbl" style="margin-bottom:4px">SAVINGS VS BUDGET</div>
+          <div style="font-size:26px;font-weight:700;color:var(--accent)">16.8%</div>
+          <div style="font-size:11px;color:var(--text-mid);margin-top:3px">₱131K saved</div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div class="m-tabs">
+        <button class="m-tab active" onclick="setMonTab('rankings',this)">Rankings</button>
+        <button class="m-tab" onclick="setMonTab('items',this)">By Item</button>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;background:var(--bg);scrollbar-width:none">
+      <div id="mon-rankings">
+        <div style="margin:12px 12px 0;background:var(--accent-soft);border-radius:12px;padding:10px 14px;display:flex;gap:10px;align-items:center">
+          <div style="width:6px;height:6px;border-radius:3px;background:var(--accent);flex-shrink:0"></div>
+          <div style="font-size:12px;color:var(--accent)">Supplier Y submitted a new bid — now <strong>₱4,300 ahead</strong></div>
+        </div>
+        <div style="padding:12px 12px 0"><div id="rank-cards"></div></div>
+      </div>
+      <div id="mon-items" class="hidden" style="padding:12px 12px 20px"><div id="item-monitor-cards"></div></div>
+    </div>
+
+    <div class="s-footer">
+      <div class="btn-row" style="margin-bottom:8px">
+        <button class="btn btn-ghost" onclick="showModal('extend')">⏳ Extend</button>
+        <button class="btn btn-ghost" onclick="showModal('notify')">📣 Notify</button>
+      </div>
+      <button class="btn btn-green" style="width:100%" onclick="showModal('award')">Award Bid</button>
+    </div>
+
+    <!-- Modal inside phone 2 -->
+    <div class="modal-overlay hidden" id="buyer-modal" onclick="hideBuyerModal()">
+      <div class="modal-sheet" onclick="event.stopPropagation()" id="buyer-modal-content"></div>
+    </div>
+  </div><!-- /phone 2 -->
+
+  <div class="flow-map">
+    <div class="flow-map-label">MONITOR FLOW</div>
+    <div class="flow-steps">
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">View Rankings</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">Bids by Item</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--amber-soft);color:var(--amber)">Extend / Notify</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">✓ Award Bid</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STEPS_LABELS = ["Details","Items","Suppliers","Review"];
+const avColors = ['var(--accent)','var(--green)','var(--amber)','var(--purple)'];
+const avBgs    = ['var(--accent-soft)','var(--green-soft)','var(--amber-soft)','var(--purple-soft)'];
+let items = [
+  {id:1,name:"Laptops",spec:"4GB RAM, 1TB HDD",qty:100,unit:"units",budget:55000},
+  {id:2,name:"Laptop Bags",spec:"",qty:100,unit:"units",budget:4000},
+  {id:3,name:"Desktops",spec:"8GB RAM, 1TB HDD, 15\" LCD",qty:2000,unit:"units",budget:620000},
+  {id:4,name:"Desktop Warranty",spec:"3-Year coverage",qty:2000,unit:"years",budget:120000},
+];
+let suppliers = [
+  {id:1,name:"Supplier X",email:"supplierx@company.com"},
+  {id:2,name:"Supplier Y",email:"suppliery@company.com"},
+  {id:3,name:"Supplier Z",email:"supplierz@company.com"},
+];
+const ALL_SUGGESTIONS = ["Supplier X","Supplier Y","Supplier Z","Vendor A"];
+const LIVE = {
+  endTime: Date.now()+47*60*1000+23*1000,
+  suppliers:[
+    {id:"Y",name:"Supplier Y",rank:1,bids:[710000,683000,649700],itemBids:[48500,3200,520000,98000]},
+    {id:"X",name:"Supplier X",rank:2,bids:[695000,672000,654000],itemBids:[49800,3400,535000,102000]},
+    {id:"Z",name:"Supplier Z",rank:3,bids:[720000,698000],itemBids:[51000,3600,545000,105000]},
+  ],
+  items:[
+    {id:1,name:"Laptops",spec:"4GB / 1TB × 100",budget:55000,bestBid:48500},
+    {id:2,name:"Laptop Bags",spec:"× 100 units",budget:4000,bestBid:3200},
+    {id:3,name:"Desktops",spec:"8GB / 1TB + 15\" LCD × 2000",budget:620000,bestBid:520000},
+    {id:4,name:"Desktop Warranty",spec:"3-Year × 2000 units",budget:120000,bestBid:98000},
+  ],
+};
+const rankColors=['var(--green)','var(--accent)','var(--amber)'];
+let expandedRank=null, buyerStep=0, animating=false;
+
+function fmt(n){if(!n&&n!==0)return'—';if(n>=1000000)return`₱${(n/1000000).toFixed(2)}M`;if(n>=1000)return`₱${(n/1000).toFixed(0)}K`;return`₱${n}`;}
+
+function renderStepBar(step){
+  const bar=document.getElementById('step-bar');bar.innerHTML='';
+  STEPS_LABELS.forEach((label,i)=>{
+    const cls=i<step?'done':i===step?'active':'todo';
+    const col=cls==='active'?'var(--accent)':cls==='done'?'var(--green)':'var(--text-soft)';
+    const node=document.createElement('div');node.className='step-node';
+    node.innerHTML=`<div class="step-circle ${cls}">${i<step?'✓':i+1}</div><span class="step-lbl" style="color:${col}">${label}</span>`;
+    bar.appendChild(node);
+    if(i<STEPS_LABELS.length-1){const line=document.createElement('div');line.className='step-line';line.style.background=i<step?'var(--green)':'var(--border)';bar.appendChild(line);}
+  });
+  document.getElementById('create-step-label').textContent=`Step ${step+1} of ${STEPS_LABELS.length}`;
+}
+
+function showCreateScreen(idx,dir){
+  document.querySelectorAll('[id^="create-s"]').forEach(s=>{s.style.display='none';s.className='screen hidden';});
+  document.getElementById('create-launched').style.display='none';
+  const el=document.getElementById('create-s'+idx);if(!el)return;
+  el.className='screen';el.style.display='flex';el.style.flexDirection='column';
+  if(dir){el.classList.add(dir==='fwd'?'slide-in-r':'slide-in-l');el.addEventListener('animationend',()=>{el.classList.remove('slide-in-r','slide-in-l');animating=false;},{once:true});}else{animating=false;}
+  renderStepBar(idx);
+  if(idx===1)renderItems();if(idx===2)renderSuppliers();if(idx===3)renderReview();
+}
+
+function buyerNext(){if(animating)return;if(buyerStep<3){animating=true;buyerStep++;showCreateScreen(buyerStep,'fwd');}}
+function buyerBack(){if(animating)return;if(buyerStep>0){animating=true;buyerStep--;showCreateScreen(buyerStep,'back');}}
+function selDur(btn){document.querySelectorAll('#dur-group .dur-pill').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function flipToggle(id){const t=document.getElementById(id);t.classList.toggle('on');t.classList.toggle('off');}
+
+function renderItems(){
+  const list=document.getElementById('items-list');list.innerHTML='';
+  items.forEach((item,i)=>{
+    const div=document.createElement('div');div.className='item-card';
+    div.innerHTML=`<div class="item-num" style="background:${avBgs[i%4]};color:${avColors[i%4]}">${i+1}</div>
+      <div class="item-body"><div class="item-name">${item.name}</div>${item.spec?`<div class="item-spec">${item.spec}</div>`:''}
+      <div class="item-chips"><span class="chip" style="background:var(--border);color:var(--text-mid)">${item.qty} ${item.unit}</span>${item.budget>0?`<span class="chip" style="background:var(--accent-soft);color:var(--accent)">Budget: ${fmt(item.budget)}</span>`:''}</div></div>
+      <button onclick="removeItem(${item.id})" style="background:none;border:none;color:var(--text-soft);cursor:pointer;font-size:18px;padding:0">×</button>`;
+    list.appendChild(div);
+  });
+  const total=items.reduce((a,i)=>a+(i.budget||0),0);
+  const row=document.getElementById('total-row');row.style.display=total>0?'flex':'none';
+  document.getElementById('items-total').textContent=fmt(total);
+}
+function removeItem(id){items=items.filter(i=>i.id!==id);renderItems();}
+function showAddItem(){document.getElementById('add-item-form').classList.remove('hidden');document.getElementById('add-item-btn').classList.add('hidden');}
+function hideAddItem(){document.getElementById('add-item-form').classList.add('hidden');document.getElementById('add-item-btn').classList.remove('hidden');}
+function addItem(){
+  const name=document.getElementById('ni-name').value.trim(),qty=parseInt(document.getElementById('ni-qty').value)||0;
+  if(!name||!qty)return;
+  items.push({id:Date.now(),name,spec:document.getElementById('ni-spec').value,qty,unit:document.getElementById('ni-unit').value,budget:parseInt(document.getElementById('ni-budget').value)||0});
+  ['ni-name','ni-spec','ni-qty','ni-budget'].forEach(id=>document.getElementById(id).value='');
+  hideAddItem();renderItems();
+}
+
+function renderSuppliers(){
+  const list=document.getElementById('sup-list');list.innerHTML='';
+  suppliers.forEach((s,i)=>{
+    const div=document.createElement('div');div.className='sup-card';
+    div.innerHTML=`<div class="sup-avatar" style="background:${avBgs[i%4]};color:${avColors[i%4]}">${s.name[0]}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${s.name}</div><div style="font-size:11px;color:var(--text-soft)">${s.email}</div></div>
+      <span class="chip" style="background:var(--green-soft);color:var(--green)">Invited</span>
+      <button onclick="removeSupplier(${s.id})" style="background:none;border:none;color:var(--text-soft);cursor:pointer;font-size:18px;padding:0">×</button>`;
+    list.appendChild(div);
+  });
+  const sug=document.getElementById('suggestions');sug.innerHTML='';
+  ALL_SUGGESTIONS.filter(s=>!suppliers.find(x=>x.name===s)).forEach(s=>{
+    const btn=document.createElement('button');
+    btn.style.cssText='padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--bg);font-size:12px;color:var(--text-mid);cursor:pointer;font-weight:500;font-family:inherit';
+    btn.textContent='+ '+s;btn.onclick=()=>addNamedSupplier(s);sug.appendChild(btn);
+  });
+}
+function removeSupplier(id){suppliers=suppliers.filter(s=>s.id!==id);renderSuppliers();}
+function addSupplier(){const e=document.getElementById('sup-email').value.trim();if(!e)return;suppliers.push({id:Date.now(),name:e,email:e});document.getElementById('sup-email').value='';renderSuppliers();}
+function addNamedSupplier(name){if(suppliers.find(s=>s.name===name))return;suppliers.push({id:Date.now(),name,email:name.toLowerCase().replace(/ /g,'')+'@company.com'});renderSuppliers();}
+
+function renderReview(){
+  document.getElementById('rv-title').textContent=document.getElementById('f-title').value||'—';
+  document.getElementById('rv-ref').textContent=document.getElementById('f-ref').value||'—';
+  const dur=document.querySelector('#dur-group .dur-pill.active');
+  document.getElementById('rv-dur').textContent=dur?dur.textContent:'—';
+  document.getElementById('rv-items-title').textContent=`Items (${items.length})`;
+  const ri=document.getElementById('rv-items');ri.innerHTML='';
+  items.forEach((item)=>{const d=document.createElement('div');d.className='kv-row';d.innerHTML=`<div><div style="font-size:13px;color:var(--text);font-weight:500">${item.name}</div><div style="font-size:11px;color:var(--text-soft)">${item.qty} ${item.unit}${item.spec?' · '+item.spec:''}</div></div>${item.budget>0?`<span style="font-size:12px;font-weight:600;color:var(--accent)">${fmt(item.budget)}</span>`:''}`; ri.appendChild(d);});
+  document.getElementById('rv-sups-title').textContent=`Suppliers (${suppliers.length})`;
+  const rs=document.getElementById('rv-sups');rs.innerHTML='';
+  suppliers.forEach((s,i)=>{const d=document.createElement('div');d.style.cssText='display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)';if(i===suppliers.length-1)d.style.borderBottom='none';d.innerHTML=`<div style="width:28px;height:28px;border-radius:50%;background:${avBgs[i%3]};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${avColors[i%3]}">${s.name[0]}</div><div><div style="font-size:13px;color:var(--text);font-weight:500">${s.name}</div><div style="font-size:11px;color:var(--text-soft)">${s.email}</div></div>`;rs.appendChild(d);});
+  document.getElementById('rv-total').textContent=fmt(items.reduce((a,i)=>a+(i.budget||0),0));
+}
+
+function launchAuction(){
+  document.querySelectorAll('[id^="create-s"]').forEach(s=>s.style.display='none');
+  const l=document.getElementById('create-launched');l.style.display='flex';l.style.flexDirection='column';
+}
+
+function setMonTab(tab,btn){
+  document.querySelectorAll('.m-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  document.getElementById('mon-rankings').classList.toggle('hidden',tab!=='rankings');
+  document.getElementById('mon-items').classList.toggle('hidden',tab!=='items');
+}
+
+function renderRankCards(){
+  const c=document.getElementById('rank-cards');c.innerHTML='';
+  const liveBudget=LIVE.items.reduce((a,i)=>a+i.budget,0);
+  LIVE.suppliers.forEach(sup=>{
+    const latest=sup.bids.at(-1),pct=((liveBudget-latest)/liveBudget*100).toFixed(1),col=rankColors[sup.rank-1],isOpen=expandedRank===sup.id;
+    const card=document.createElement('div');card.className='rank-card'+(isOpen?' open':'');
+    card.innerHTML=`<div class="rank-head" onclick="toggleRank('${sup.id}')">
+      <div class="rank-num-box" style="background:${col}22;color:${col}">#${sup.rank}</div>
+      <div class="rank-body"><div class="rank-name">${sup.name}</div><div class="rank-bids">${sup.bids.length} bids submitted</div></div>
+      <div style="text-align:right"><div class="rank-amount" style="color:${sup.rank===1?'var(--green)':'var(--text)'}">${fmt(latest)}</div><div class="rank-pct">↓${pct}% vs budget</div></div>
+      <div class="rank-chevron ${isOpen?'open':''}">▾</div></div>
+      ${isOpen?`<div class="divider"></div><div style="padding:12px 16px"><div class="lbl" style="margin-bottom:10px">BID HISTORY</div>${sup.bids.map((b,i)=>`<div class="rank-hist-row"><div style="display:flex;align-items:center;gap:8px"><div style="width:6px;height:6px;border-radius:3px;background:${i===sup.bids.length-1?col:'var(--border)'}"></div><span style="font-size:12px;color:var(--text-mid)">Bid ${i+1}</span></div><span style="font-size:13px;font-weight:${i===sup.bids.length-1?700:400};color:${i===sup.bids.length-1?'var(--text)':'var(--text-soft)'}">${fmt(b)}</span></div>`).join('')}</div><div style="display:flex;gap:8px;padding:0 16px 14px"><button class="btn btn-ghost" style="flex:1;padding:9px;font-size:12px" onclick="showModal('msg')">Message</button><button class="btn" style="flex:1;padding:9px;font-size:12px;border:1.5px solid var(--green);background:var(--green-soft);color:var(--green);border-radius:12px" onclick="showModal('award')">Award Bid</button></div>`:''}`;
+    c.appendChild(card);
+  });
+}
+function toggleRank(id){expandedRank=expandedRank===id?null:id;renderRankCards();}
+
+function renderItemMonitor(){
+  const c=document.getElementById('item-monitor-cards');c.innerHTML='';
+  LIVE.items.forEach(item=>{
+    const sorted=[...LIVE.suppliers].sort((a,b)=>a.itemBids[item.id-1]-b.itemBids[item.id-1]);
+    const bestAmt=sorted[0].itemBids[item.id-1],pct=((item.budget-bestAmt)/item.budget*100).toFixed(0);
+    const card=document.createElement('div');card.className='item-monitor';
+    card.innerHTML=`<div class="im-top"><div><div class="im-name">${item.name}</div><div class="im-spec">${item.spec}</div></div><div style="text-align:right"><div class="im-best-val">${fmt(bestAmt)}</div><div class="im-best-lbl">↓${pct}% · ${sorted[0].name}</div></div></div>${sorted.map(s=>{const amt=s.itemBids[item.id-1];const w=(bestAmt/amt)*100;const win=s.id===sorted[0].id;const col=win?'var(--green)':'var(--accent)';return`<div class="bar-row"><div class="bar-name">${s.name}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${col}"></div></div><div class="bar-val" style="color:${win?'var(--green)':'var(--text)'}">${fmt(amt)}</div></div>`;}).join('')}`;
+    c.appendChild(card);
+  });
+}
+
+function showModal(type){
+  let content='';
+  if(type==='extend')content=`<div class="modal-handle"></div><div class="modal-title">Extend Auction</div><div class="modal-sub">Add time to the current window</div>${['+ 5 Minutes','+ 10 Minutes','+ 15 Minutes','+ 30 Minutes'].map(o=>`<button onclick="hideBuyerModal()" class="action-btn">${o}</button>`).join('')}`;
+  else if(type==='notify')content=`<div class="modal-handle"></div><div class="modal-title">Notify Stakeholders</div><div class="modal-sub">Share current auction summary</div>${['Email Summary Report','Share Best Bid','Invite to View Live'].map(o=>`<button onclick="hideBuyerModal()" class="action-btn">${o}</button>`).join('')}`;
+  else if(type==='award')content=`<div class="modal-handle"></div><div class="modal-title">Award Bid</div><div class="modal-sub">Confirm award to leading supplier</div><div style="background:var(--green-soft);border-radius:12px;padding:14px;margin-bottom:16px;border:1px solid rgba(12,158,106,0.2)"><div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px">Supplier Y — Leading Bid</div><div style="font-size:22px;font-weight:800;color:var(--text)">₱649K</div><div style="font-size:12px;color:var(--green);margin-top:4px">16.8% below budget</div></div><button onclick="hideBuyerModal()" class="btn btn-green" style="width:100%;margin-bottom:8px;font-size:14px">✓ Confirm Award</button><button onclick="hideBuyerModal()" class="btn" style="width:100%;background:transparent;color:var(--text-mid)">Cancel</button>`;
+  else if(type==='msg')content=`<div class="modal-handle"></div><div class="modal-title">Message Supplier</div><textarea class="ios-input" placeholder="Type your message…" style="height:88px;margin-bottom:10px"></textarea><button onclick="hideBuyerModal()" class="btn btn-primary" style="width:100%;font-size:14px;margin-bottom:8px">Send</button><button onclick="hideBuyerModal()" class="btn" style="width:100%;background:transparent;color:var(--text-mid)">Cancel</button>`;
+  document.getElementById('buyer-modal-content').innerHTML=content;
+  const m=document.getElementById('buyer-modal');m.classList.remove('hidden');m.style.display='flex';
+}
+function hideBuyerModal(){const m=document.getElementById('buyer-modal');m.classList.add('hidden');m.style.display='none';}
+
+function updateCountdown(){
+  const left=Math.max(0,LIVE.endTime-Date.now()),m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);
+  const str=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'),urgent=m<10;
+  const el=document.getElementById('m-timer');if(el)el.textContent=str;
+  const box=document.getElementById('m-timer-box');if(box)box.classList.toggle('urgent',urgent);
+}
+
+showCreateScreen(0,null);renderItems();renderSuppliers();renderRankCards();renderItemMonitor();updateCountdown();setInterval(updateCountdown,1000);
+</script>
+</body>
+</html>

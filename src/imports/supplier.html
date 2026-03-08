@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>eAuction — Supplier</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F7F8FA; --surface: #FFFFFF; --border: #EAEDF2; --border-strong: #D0D5DD;
+  --text: #0D1117; --text-mid: #5C6472; --text-soft: #9BA3AF;
+  --accent: #1A56DB; --accent-soft: #EEF3FD;
+  --green: #0C9E6A; --green-soft: #EDFAF4;
+  --red: #DC2626; --red-soft: #FEF2F2;
+  --amber: #D97706; --amber-soft: #FFFBEB;
+  --purple: #7C3AED; --purple-soft: #F5F3FF;
+}
+body { font-family: 'Inter', -apple-system, 'Helvetica Neue', sans-serif; background: #ECEEF2; min-height: 100vh; padding: 40px 20px 80px; display: flex; flex-direction: column; align-items: center; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+.page-header { text-align: center; margin-bottom: 48px; }
+.page-eyebrow { font-size: 11px; color: var(--text-soft); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; }
+.page-title { font-size: 30px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.page-sub { font-size: 14px; color: var(--text-mid); margin-top: 6px; }
+
+.frame-section { display: flex; flex-direction: column; align-items: center; gap: 14px; margin-bottom: 16px; }
+.frame-label { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; color: var(--text-soft); text-transform: uppercase; }
+.frame-sublabel { font-size: 12px; color: var(--text-mid); margin-top: -8px; }
+
+.phone { width: 375px; background: var(--bg); border-radius: 0; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.04), 0 12px 40px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.08); min-height: 812px; display: flex; flex-direction: column; position: relative; }
+
+.s-header { background: var(--surface); flex-shrink: 0; }
+.s-body { flex: 1; overflow-y: auto; background: var(--bg); padding: 20px 20px 0; scrollbar-width: none; }
+.s-body::-webkit-scrollbar { display: none; }
+.s-footer { background: var(--surface); border-top: 1px solid var(--border); padding: 12px 20px 32px; flex-shrink: 0; }
+.divider { height: 1px; background: var(--border); flex-shrink: 0; }
+.lbl { font-size: 11px; font-weight: 600; color: var(--text-soft); letter-spacing: 1px; margin-bottom: 6px; text-transform: uppercase; }
+.chip { display: inline-flex; align-items: center; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
+.live-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--red); margin-right: 5px; animation: blink 1.4s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+.card { background: var(--surface); border-radius: 16px; border: 1.5px solid var(--border); padding: 14px 16px; margin-bottom: 10px; }
+.kv-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--border); font-size:12px; }
+.kv-row:last-child { border-bottom:none; }
+.kv-key { color:var(--text-mid); }
+.kv-val { font-weight:600; color:var(--text); text-align:right; }
+
+.btn { border:none; border-radius:12px; font-family:inherit; font-size:13px; font-weight:700; cursor:pointer; padding:12px; transition:opacity 0.15s; }
+.btn:active { opacity:0.8; }
+.btn-primary { background:var(--accent); color:white; }
+.btn-green   { background:var(--green); color:white; }
+.btn-ghost   { background:var(--bg); color:var(--text); border:1.5px solid var(--border); }
+.btn-danger  { background:var(--red); color:white; }
+.btn-row { display:flex; gap:8px; }
+.btn-row .btn { flex:1; }
+
+.ios-input { width:100%; padding:10px 12px; border-radius:10px; border:1.5px solid var(--border-strong); background:var(--surface); color:var(--text); font-size:13px; font-family:inherit; outline:none; transition:border 0.15s; }
+.ios-input:focus { border-color:var(--accent); }
+.ios-input::placeholder { color:var(--text-soft); }
+textarea.ios-input { height:80px; resize:none; }
+
+.timer-box { background:var(--amber-soft); border:1.5px solid var(--amber); border-radius:14px; padding:7px 12px; text-align:center; min-width:62px; flex-shrink:0; }
+.timer-box.urgent { background:var(--red-soft); border-color:var(--red); }
+.timer-label { font-size:9px; font-weight:700; letter-spacing:1.5px; margin-bottom:1px; color:var(--amber); }
+.timer-box.urgent .timer-label { color:var(--red); }
+.timer-val { font-size:20px; font-weight:800; line-height:1; color:var(--amber); font-variant-numeric:tabular-nums; }
+.timer-box.urgent .timer-val { color:var(--red); }
+
+.bid-input-row { display:flex; align-items:center; gap:8px; }
+.bid-stepper { width:34px; height:34px; border-radius:9px; border:1.5px solid var(--border); background:var(--bg); color:var(--text); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:inherit; line-height:1; }
+.bid-stepper:active { background:var(--border-strong); }
+.bid-input-wrap { flex:1; position:relative; }
+.bid-prefix { position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-soft); font-size:13px; pointer-events:none; }
+.bid-input { width:100%; padding:9px 10px 9px 22px; border-radius:9px; border:1.5px solid var(--border-strong); background:var(--surface); color:var(--text); font-size:14px; font-weight:700; outline:none; font-family:inherit; transition:border 0.15s, background 0.15s; }
+.bid-input.best { border-color:var(--green); background:var(--green-soft); }
+.sup-bid-card { background:var(--surface); border-radius:16px; border:1.5px solid var(--border); padding:12px 14px; transition:border 0.2s; margin-bottom:8px; }
+.sup-bid-card.best { border-color:var(--green); }
+
+.modal-overlay { position:absolute; inset:0; background:rgba(0,0,0,0.25); display:flex; align-items:flex-end; z-index:50; }
+.modal-sheet { width:100%; background:var(--surface); border-radius:28px 28px 0 0; padding:20px 20px 40px; }
+.modal-handle { width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 20px; }
+.modal-title { font-size:18px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.modal-sub { font-size:13px; color:var(--text-mid); margin-bottom:18px; }
+
+.toast-banner { position:absolute; top:14px; left:16px; right:16px; z-index:100; background:var(--green); border-radius:14px; padding:13px 16px; display:flex; align-items:center; gap:12px; box-shadow:0 8px 32px rgba(12,158,106,0.3); animation:fadeDown 0.3s ease; }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.toast-icon { width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:13px; }
+.toast-msg { font-size:14px; font-weight:700; color:white; }
+.toast-sub { font-size:12px; color:rgba(255,255,255,0.8); margin-top:1px; }
+
+.flow-map { width:375px; padding:14px 20px; background:white; border:1px solid var(--border); }
+.flow-map-label { font-size:10px; font-weight:600; color:var(--text-soft); letter-spacing:1px; margin-bottom:10px; }
+.flow-steps { display:flex; align-items:center; overflow-x:auto; }
+.flow-step { padding:4px 8px; border-radius:6px; font-size:10px; font-weight:600; white-space:nowrap; }
+.flow-arrow { flex:1; height:1px; background:var(--border); min-width:4px; }
+
+.section-bridge { display:flex; flex-direction:column; align-items:center; margin:32px 0; }
+.bridge-line { width:2px; height:36px; background:var(--border); }
+.bridge-label { background:var(--border); color:var(--text-soft); font-size:10px; font-weight:700; letter-spacing:1.5px; padding:4px 14px; border-radius:20px; margin:6px 0; }
+
+/* email notification screen styles */
+.email-app-bar { background:#2D3748; padding:14px 20px; display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.email-body-wrap { flex:1; overflow-y:auto; background:#F7F8FA; scrollbar-width:none; }
+.email-body-wrap::-webkit-scrollbar { display:none; }
+.email-card { background:white; margin:16px; border-radius:12px; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.08); }
+.email-header-band { background:var(--accent); padding:20px; }
+.email-content { padding:20px; }
+.email-item-row { display:flex; justify-content:space-between; padding:7px 0; border-bottom:1px solid #F0F2F5; font-size:12px; }
+.email-item-row:last-child { border-bottom:none; }
+
+/* auction details screen */
+.detail-stat { flex:1; padding:12px 14px; }
+.detail-stat-val { font-size:20px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.detail-stat-lbl { font-size:10px; color:var(--text-soft); font-weight:600; letter-spacing:0.5px; }
+
+.hidden { display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="page-eyebrow">eAuction · Mobile App</div>
+  <div class="page-title">Supplier Prototype</div>
+  <div class="page-sub">Supplier X — Full Bidding Flow</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 1 — INVITATION EMAIL
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🏢 Supplier — 1. Receive Invite</div>
+  <div class="frame-sublabel">Email notification with auction details & CTA</div>
+
+  <div class="phone">
+    <!-- Email app bar -->
+    <div class="email-app-bar">
+      <div style="font-size:18px">←</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:white">Inbox</div>
+      </div>
+      <div style="font-size:13px;color:rgba(255,255,255,0.6)">1 of 24</div>
+    </div>
+
+    <!-- Email metadata bar -->
+    <div style="background:white;padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px">You've been invited to bid — IT Equipment Procurement</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--accent);flex-shrink:0">A</div>
+        <div>
+          <div style="font-size:12px;font-weight:600;color:var(--text)">eAuction Platform <span style="color:var(--text-soft);font-weight:400">&lt;noreply@eauction.com&gt;</span></div>
+          <div style="font-size:11px;color:var(--text-soft)">To: supplierx@company.com · Dec 18, 2024, 9:04 AM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Email body -->
+    <div class="email-body-wrap">
+      <div class="email-card">
+        <!-- Header band -->
+        <div class="email-header-band">
+          <div style="font-size:11px;color:rgba(255,255,255,0.7);letter-spacing:2px;margin-bottom:6px">eAUCTION PLATFORM</div>
+          <div style="font-size:20px;font-weight:800;color:white;margin-bottom:4px">You're invited to bid</div>
+          <div style="font-size:13px;color:rgba(255,255,255,0.85)">Company ABC has invited Supplier X to participate in a reverse auction.</div>
+        </div>
+
+        <!-- Email content -->
+        <div class="email-content">
+          <div style="font-size:13px;color:var(--text-mid);margin-bottom:16px;line-height:1.6">
+            Hello <strong style="color:var(--text)">Supplier X</strong>,<br><br>
+            Company ABC has invited you to submit competitive bids for the following procurement auction. Please review the details below and confirm your participation.
+          </div>
+
+          <!-- Auction info card -->
+          <div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:16px;border:1.5px solid var(--border)">
+            <div style="font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:1px;margin-bottom:10px">AUCTION DETAILS</div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Auction</span><span style="font-weight:600;color:var(--text)">IT Equipment Procurement</span></div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Reference</span><span style="font-weight:600;color:var(--text)">AUC-2024-0892</span></div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Hosted by</span><span style="font-weight:600;color:var(--text)">Company ABC</span></div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Opens</span><span style="font-weight:600;color:var(--text)">Dec 20, 2024 · 12:00 PM</span></div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Duration</span><span style="font-weight:600;color:var(--text)">2 hours</span></div>
+            <div class="email-item-row"><span style="color:var(--text-mid)">Items</span><span style="font-weight:600;color:var(--text)">4 line items</span></div>
+          </div>
+
+          <!-- Items preview -->
+          <div style="font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:1px;margin-bottom:8px">ITEMS TO BID ON</div>
+          <div style="background:var(--bg);border-radius:12px;padding:12px;margin-bottom:16px;border:1.5px solid var(--border)">
+            ${[['Laptops','4GB RAM, 1TB HDD','100 units'],['Laptop Bags','Standard carry','100 units'],['Desktops','8GB RAM, 1TB + 15" LCD','2,000 units'],['Desktop Warranty','3-Year coverage','2,000 years']].map(([name,spec,qty])=>`
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border)">
+              <div><div style="font-size:12px;font-weight:600;color:var(--text)">${name}</div><div style="font-size:10px;color:var(--text-soft)">${spec}</div></div>
+              <span style="font-size:11px;color:var(--text-mid);font-weight:500">${qty}</span>
+            </div>`).join('')}
+          </div>
+
+          <!-- Rules -->
+          <div style="background:var(--accent-soft);border-radius:12px;padding:12px 14px;margin-bottom:20px;border:1.5px solid rgba(26,86,219,0.15)">
+            <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:8px">AUCTION RULES</div>
+            <div style="font-size:12px;color:var(--accent);line-height:1.7">
+              ✓ Live supplier rankings visible<br>
+              ✓ Best bid amount shown<br>
+              ✗ Auto-extend disabled
+            </div>
+          </div>
+
+          <!-- CTA button -->
+          <a href="#" onclick="return false" style="display:block;background:var(--accent);color:white;text-align:center;padding:14px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;margin-bottom:12px">View Auction &amp; Register →</a>
+          <a href="#" onclick="return false" style="display:block;background:var(--bg);color:var(--text-mid);text-align:center;padding:12px;border-radius:12px;font-weight:600;font-size:13px;text-decoration:none;border:1.5px solid var(--border)">Decline Invitation</a>
+
+          <div style="font-size:11px;color:var(--text-soft);text-align:center;margin-top:16px;line-height:1.6">
+            This invitation expires on Dec 20, 2024 at 12:00 PM.<br>
+            Questions? Contact procurement@companyabc.com
+          </div>
+        </div>
+      </div>
+      <div style="height:24px"></div>
+    </div>
+  </div><!-- /phone 1 -->
+</div>
+
+<!-- Bridge -->
+<div class="section-bridge">
+  <div class="bridge-line"></div>
+  <div class="bridge-label">SUPPLIER TAPS "VIEW AUCTION"</div>
+  <div class="bridge-line"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 2 — AUCTION DETAILS & REGISTER
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🏢 Supplier — 2. Review Auction Details</div>
+  <div class="frame-sublabel">Preview items, rules, confirm participation</div>
+
+  <div class="phone">
+    <div class="s-header">
+      <div style="display:flex;align-items:center;gap:12px;padding:16px 20px 12px">
+        <button style="background:none;border:none;cursor:pointer;font-size:18px;color:var(--text-mid);padding:0">←</button>
+        <div style="flex:1">
+          <div style="font-size:11px;color:var(--text-soft);letter-spacing:1px">AUCTION INVITE</div>
+          <div style="font-size:17px;font-weight:700;color:var(--text)">IT Equipment Procurement</div>
+        </div>
+        <span class="chip" style="background:var(--amber-soft);color:var(--amber);font-size:11px">Pending</span>
+      </div>
+    </div>
+
+    <div class="s-body">
+      <!-- Status banner -->
+      <div style="background:var(--accent-soft);border-radius:14px;padding:12px 14px;border:1.5px solid rgba(26,86,219,0.18);margin-bottom:14px;display:flex;gap:12px;align-items:center">
+        <div style="font-size:22px">📋</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--accent)">Company ABC invited you</div>
+          <div style="font-size:12px;color:var(--accent);margin-top:2px">Auction starts Dec 20, 2024 · 12:00 PM</div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="background:var(--surface);border-radius:16px;border:1.5px solid var(--border);display:flex;margin-bottom:10px;overflow:hidden">
+        <div class="detail-stat" style="border-right:1px solid var(--border);text-align:center">
+          <div class="detail-stat-val">4</div>
+          <div class="detail-stat-lbl">ITEMS</div>
+        </div>
+        <div class="detail-stat" style="border-right:1px solid var(--border);text-align:center">
+          <div class="detail-stat-val">3</div>
+          <div class="detail-stat-lbl">SUPPLIERS</div>
+        </div>
+        <div class="detail-stat" style="text-align:center">
+          <div class="detail-stat-val">2h</div>
+          <div class="detail-stat-lbl">DURATION</div>
+        </div>
+      </div>
+
+      <!-- Auction info -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Auction Info</div>
+        <div class="kv-row"><span class="kv-key">Reference</span><span class="kv-val">AUC-2024-0892</span></div>
+        <div class="kv-row"><span class="kv-key">Hosted by</span><span class="kv-val">Company ABC</span></div>
+        <div class="kv-row"><span class="kv-key">Opens</span><span class="kv-val">Dec 20 · 12:00 PM</span></div>
+        <div class="kv-row"><span class="kv-key">Closes</span><span class="kv-val">Dec 20 · 2:00 PM</span></div>
+      </div>
+
+      <!-- Items list -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Items to Bid On</div>
+        ${[
+          {num:1,name:'Laptops',spec:'4GB RAM, 1TB HDD',qty:'100 units',col:'var(--accent)',bg:'var(--accent-soft)'},
+          {num:2,name:'Laptop Bags',spec:'Standard carry bag',qty:'100 units',col:'var(--green)',bg:'var(--green-soft)'},
+          {num:3,name:'Desktops',spec:'8GB RAM, 1TB HDD, 15" LCD',qty:'2,000 units',col:'var(--amber)',bg:'var(--amber-soft)'},
+          {num:4,name:'Desktop Warranty',spec:'3-Year coverage',qty:'2,000 years',col:'var(--purple)',bg:'var(--purple-soft)'},
+        ].map(i=>`
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="width:30px;height:30px;border-radius:8px;background:${i.bg};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:${i.col};flex-shrink:0">${i.num}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:600;color:var(--text)">${i.name}</div>
+            <div style="font-size:11px;color:var(--text-soft);margin-top:2px">${i.spec}</div>
+          </div>
+          <span style="font-size:11px;color:var(--text-mid);font-weight:500;white-space:nowrap">${i.qty}</span>
+        </div>`).join('')}
+      </div>
+
+      <!-- Auction rules -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Auction Rules</div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green)">✓</div>
+          <div style="font-size:13px;color:var(--text)">Live rankings visible to you</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--green)">✓</div>
+          <div style="font-size:13px;color:var(--text)">Best bid amount shown</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0">
+          <div style="width:22px;height:22px;border-radius:50%;background:var(--red-soft);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--red)">✗</div>
+          <div style="font-size:13px;color:var(--text-mid)">No auto-extension</div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Notes from Buyer</div>
+        <div style="font-size:13px;color:var(--text-mid);line-height:1.6">Please submit your most competitive prices for all 4 line items. Bids must cover the full scope. Partial bids will not be accepted.</div>
+      </div>
+    </div>
+
+    <div class="s-footer">
+      <button class="btn btn-green" style="width:100%;font-size:14px;margin-bottom:8px">✓ Accept &amp; Participate</button>
+      <button class="btn btn-ghost" style="width:100%;font-size:13px">Decline Invitation</button>
+    </div>
+  </div><!-- /phone 2 -->
+
+  <div class="flow-map">
+    <div class="flow-map-label">SUPPLIER DECISION</div>
+    <div class="flow-steps">
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Review Details</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Check Items</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Check Rules</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">✓ Accept</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bridge -->
+<div class="section-bridge">
+  <div class="bridge-line"></div>
+  <div class="bridge-label">AUCTION IS LIVE · SUPPLIER LOGS IN</div>
+  <div class="bridge-line"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 3 — LIVE BIDDING
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🏢 Supplier — 3. Submit Bid (Live)</div>
+  <div class="frame-sublabel">Enter prices per item, view standing, submit bid</div>
+
+  <div class="phone">
+    <!-- Header -->
+    <div class="s-header">
+      <div style="padding:18px 20px 0">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--text-soft);letter-spacing:1px;margin-bottom:4px">LIVE AUCTION · SUPPLIER X</div>
+            <div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.2">IT Equipment Procurement</div>
+            <div style="font-size:12px;color:var(--text-mid);margin-top:3px">AUC-2024-0892</div>
+          </div>
+          <div class="timer-box" id="s-timer-box">
+            <div class="timer-label">LEFT</div>
+            <div class="timer-val" id="s-timer">47:23</div>
+          </div>
+        </div>
+        <!-- Status grid -->
+        <div style="margin-top:14px;margin-bottom:14px;background:var(--bg);border-radius:14px;padding:12px 14px;border:1.5px solid var(--border)">
+          <div style="display:flex">
+            <div style="flex:1;text-align:center;padding-right:14px;border-right:1px solid var(--border)">
+              <div class="lbl" style="text-align:center;margin-bottom:6px">MY RANK</div>
+              <div id="rank-box" style="width:40px;height:40px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:var(--accent);margin:0 auto 4px">#2</div>
+              <div style="font-size:10px;color:var(--text-soft)">of 3</div>
+            </div>
+            <div style="flex:2;padding-left:14px;padding-right:14px;border-right:1px solid var(--border)">
+              <div class="lbl" style="margin-bottom:6px">MY LATEST BID</div>
+              <div style="font-size:20px;font-weight:700;color:var(--text)" id="latest-bid-display">₱654K</div>
+              <div style="font-size:11px;color:var(--text-soft);margin-top:3px" id="bid-count-display">3 bids placed</div>
+            </div>
+            <div style="flex:1.2;padding-left:14px">
+              <div class="lbl" style="margin-bottom:6px">VS LEADER</div>
+              <div style="font-size:14px;font-weight:700;color:var(--red)" id="vs-leader-display">+₱4.3K</div>
+              <div style="font-size:10px;color:var(--text-soft);margin-top:3px" id="vs-leader-sub">behind</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="padding:10px 20px 0;font-size:13px;font-weight:600;color:var(--text-mid)">Submit New Bid</div>
+    </div>
+
+    <!-- Bid inputs -->
+    <div style="flex:1;overflow-y:auto;background:var(--bg);scrollbar-width:none">
+      <div style="padding:8px 12px 0" id="sup-bid-items"></div>
+      <!-- Total summary -->
+      <div style="padding:12px 12px 24px">
+        <div class="card" style="margin-bottom:0">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div>
+              <div style="font-size:12px;color:var(--text-soft);margin-bottom:2px">New Total Bid</div>
+              <div style="font-size:26px;font-weight:700" id="sup-total">₱654,200</div>
+            </div>
+            <div id="sup-delta-badge" style="border-radius:10px;padding:5px 10px;font-size:12px;font-weight:700;display:none"></div>
+          </div>
+          <button onclick="openConfirm()" class="btn btn-primary" style="width:100%;font-size:14px">Submit Bid</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="s-footer" style="padding-top:12px">
+      <button onclick="openMsg()" class="btn btn-ghost" style="width:100%">Message Buyer</button>
+    </div>
+
+    <!-- Confirm modal -->
+    <div class="modal-overlay hidden" id="confirm-modal" onclick="closeConfirm()">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Confirm Submission</div>
+        <div class="modal-sub">Your bid will be visible to the buyer immediately.</div>
+        <div style="background:var(--bg);border-radius:12px;padding:12px 14px;margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="font-size:13px;color:var(--text-mid)">Total bid</span>
+            <span style="font-size:14px;font-weight:700" id="confirm-total">—</span>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="font-size:13px;color:var(--text-mid)">vs last bid</span>
+            <span style="font-size:13px;font-weight:600" id="confirm-delta">—</span>
+          </div>
+        </div>
+        <button onclick="submitBid()" class="btn btn-primary" style="width:100%;margin-bottom:8px;font-size:14px">Confirm &amp; Submit</button>
+        <button onclick="closeConfirm()" class="btn" style="width:100%;background:transparent;color:var(--text-mid)">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Message modal -->
+    <div class="modal-overlay hidden" id="msg-modal" onclick="closeMsgModal()">
+      <div class="modal-sheet" onclick="event.stopPropagation()">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Message Buyer</div>
+        <textarea id="msg-input" placeholder="Type your message…" class="ios-input" style="margin-bottom:10px"></textarea>
+        <button onclick="sendMsg()" class="btn btn-primary" style="width:100%;font-size:14px;margin-bottom:8px">Send</button>
+        <button onclick="closeMsgModal()" class="btn" style="width:100%;background:transparent;color:var(--text-mid)">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Success toast -->
+    <div class="toast-banner hidden" id="sup-toast">
+      <div class="toast-icon">✓</div>
+      <div>
+        <div class="toast-msg">Bid submitted</div>
+        <div class="toast-sub" id="toast-sub-text">now live</div>
+      </div>
+    </div>
+  </div><!-- /phone 3 -->
+
+  <div class="flow-map">
+    <div class="flow-map-label">BIDDING FLOW</div>
+    <div class="flow-steps">
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">View Ranking</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Enter Prices</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Review Total</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Confirm</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">✓ Submitted</div>
+    </div>
+  </div>
+</div>
+
+<!-- Bridge -->
+<div class="section-bridge">
+  <div class="bridge-line"></div>
+  <div class="bridge-label">BID SUBMITTED SUCCESSFULLY</div>
+  <div class="bridge-line"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FRAME 4 — BID CONFIRMED / POST-SUBMIT
+══════════════════════════════════════ -->
+<div class="frame-section">
+  <div class="frame-label">🏢 Supplier — 4. Bid Confirmed</div>
+  <div class="frame-sublabel">Bid live · ranking updated · await auction close</div>
+
+  <div class="phone">
+    <!-- Header -->
+    <div class="s-header">
+      <div style="padding:18px 20px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:11px;color:var(--text-soft);letter-spacing:1px;margin-bottom:4px">LIVE AUCTION · SUPPLIER X</div>
+            <div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.2">IT Equipment Procurement</div>
+            <div style="font-size:12px;color:var(--text-mid);margin-top:3px">AUC-2024-0892</div>
+          </div>
+          <div class="timer-box" id="s2-timer-box">
+            <div class="timer-label">LEFT</div>
+            <div class="timer-val" id="s2-timer">47:23</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;background:var(--bg);scrollbar-width:none;padding:16px 16px 0">
+
+      <!-- Success banner -->
+      <div style="background:var(--green);border-radius:16px;padding:16px 18px;margin-bottom:14px;display:flex;align-items:center;gap:14px">
+        <div style="width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">✓</div>
+        <div>
+          <div style="font-size:15px;font-weight:700;color:white">Bid submitted successfully</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.85);margin-top:3px">Your bid is now live · Dec 20, 2024 · 12:34 PM</div>
+        </div>
+      </div>
+
+      <!-- New rank card -->
+      <div style="background:var(--surface);border-radius:16px;border:1.5px solid var(--green);padding:16px;margin-bottom:10px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-soft);letter-spacing:1px;margin-bottom:10px">YOUR STANDING</div>
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="width:56px;height:56px;border-radius:14px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--green)">#1</div>
+          <div style="flex:1">
+            <div style="font-size:18px;font-weight:700;color:var(--text)">₱638,200</div>
+            <div style="font-size:12px;color:var(--green);margin-top:3px">↓ ₱16K lower than last bid</div>
+            <div style="font-size:11px;color:var(--text-soft);margin-top:2px">Now leading — ₱11.5K ahead of #2</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bid breakdown -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Submitted Bid Breakdown</div>
+        ${[
+          ['Laptops','₱48,500'],
+          ['Laptop Bags','₱3,200'],
+          ['Desktops','₱488,500'],
+          ['Desktop Warranty','₱98,000'],
+        ].map(([name,val],i)=>`
+        <div class="kv-row">
+          <span class="kv-key">${name}</span>
+          <span class="kv-val" style="color:var(--green)">${val}</span>
+        </div>`).join('')}
+        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:2px solid var(--border);margin-top:4px">
+          <span style="font-size:13px;font-weight:700;color:var(--text)">Total</span>
+          <span style="font-size:16px;font-weight:800;color:var(--green)">₱638,200</span>
+        </div>
+      </div>
+
+      <!-- Bid history -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">My Bid History</div>
+        ${[
+          ['Bid 1','₱695,000','12:03 PM','var(--text-soft)'],
+          ['Bid 2','₱672,000','12:18 PM','var(--text-soft)'],
+          ['Bid 3','₱654,000','12:28 PM','var(--text-soft)'],
+          ['Bid 4 (latest)','₱638,200','12:34 PM','var(--green)'],
+        ].map(([label,val,time,col])=>`
+        <div class="kv-row">
+          <div><div style="font-size:12px;color:var(--text-mid)">${label}</div><div style="font-size:10px;color:var(--text-soft)">${time}</div></div>
+          <span style="font-size:13px;font-weight:600;color:${col}">${val}</span>
+        </div>`).join('')}
+      </div>
+
+      <!-- What happens next -->
+      <div style="background:var(--amber-soft);border-radius:14px;padding:14px;border:1.5px solid rgba(217,119,6,0.2);margin-bottom:20px">
+        <div style="font-size:12px;font-weight:700;color:var(--amber);margin-bottom:6px">⏳ Auction closes in ~43 minutes</div>
+        <div style="font-size:12px;color:var(--amber);line-height:1.6">You can submit additional bids at any time before the auction closes. The buyer will notify you if your bid is selected.</div>
+      </div>
+
+    </div>
+
+    <div class="s-footer">
+      <button class="btn btn-primary" style="width:100%;margin-bottom:8px">Improve My Bid</button>
+      <button class="btn btn-ghost" style="width:100%">Message Buyer</button>
+    </div>
+  </div><!-- /phone 4 -->
+
+  <div class="flow-map">
+    <div class="flow-map-label">POST-SUBMIT STATE</div>
+    <div class="flow-steps">
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">Bid Live ✓</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">Rank #1</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--amber-soft);color:var(--amber)">Await Close</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--accent-soft);color:var(--accent)">Improve Bid?</div><div class="flow-arrow"></div>
+      <div class="flow-step" style="background:var(--green-soft);color:var(--green)">🏆 Awarded</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LIVE = {
+  endTime: Date.now() + 47*60*1000 + 23*1000,
+  leaderBid: 649700,
+  items:[
+    {id:1,name:"Laptops",spec:"4GB / 1TB × 100 units",budget:55000,bestBid:48500},
+    {id:2,name:"Laptop Bags",spec:"× 100 units",budget:4000,bestBid:3200},
+    {id:3,name:"Desktops",spec:'8GB / 1TB + 15" LCD × 2000',budget:620000,bestBid:520000},
+    {id:4,name:"Desktop Warranty",spec:"3-Year coverage × 2000 units",budget:120000,bestBid:98000},
+  ],
+};
+let supAmounts=[49800,3400,535000,102000];
+const supBaseline=654000;
+let bidCount=3;
+
+function fmt(n){if(!n&&n!==0)return'—';if(n>=1000000)return`₱${(n/1000000).toFixed(2)}M`;if(n>=1000)return`₱${(n/1000).toFixed(0)}K`;return`₱${n}`;}
+function fmtFull(n){return'₱'+n.toLocaleString();}
+
+function renderSupBidItems(){
+  const container=document.getElementById('sup-bid-items');
+  container.innerHTML='';
+  LIVE.items.forEach((item,idx)=>{
+    const isBest=supAmounts[idx]<=item.bestBid;
+    const card=document.createElement('div');
+    card.className='sup-bid-card'+(isBest?' best':'');
+    card.innerHTML=`
+      <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">${item.name}</div>
+          <div style="font-size:11px;color:var(--text-soft)">${item.spec}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:10px;color:var(--text-soft)">Best bid</div>
+          <div style="font-size:12px;font-weight:600;color:var(--green)">${fmtFull(item.bestBid)}</div>
+        </div>
+      </div>
+      <div class="bid-input-row">
+        <button class="bid-stepper" onclick="stepBid(${idx},-500)">−</button>
+        <div class="bid-input-wrap">
+          <span class="bid-prefix">₱</span>
+          <input class="bid-input ${isBest?'best':''}" type="number" value="${supAmounts[idx]}" oninput="setBidVal(${idx},this.value)">
+        </div>
+        <button class="bid-stepper" onclick="stepBid(${idx},500)">+</button>
+      </div>
+      ${isBest?'<div style="font-size:10px;color:var(--green);margin-top:5px;font-weight:600">✓ Competitive on this item</div>':''}
+    `;
+    container.appendChild(card);
+  });
+  updateSupTotal();
+}
+
+function stepBid(idx,delta){supAmounts[idx]=Math.max(0,supAmounts[idx]+delta);renderSupBidItems();}
+function setBidVal(idx,val){supAmounts[idx]=parseInt(val)||0;updateSupTotal();}
+
+function updateSupTotal(){
+  const total=supAmounts.reduce((a,b)=>a+b,0);
+  const totalEl=document.getElementById('sup-total');
+  totalEl.textContent=fmtFull(total);
+  totalEl.style.color=total<supBaseline?'var(--green)':'var(--text)';
+  const delta=supBaseline-total;
+  const badge=document.getElementById('sup-delta-badge');
+  if(delta!==0){
+    badge.style.display='';
+    badge.textContent=delta>0?`↓ ${fmt(delta)} lower`:`↑ ${fmt(Math.abs(delta))} higher`;
+    badge.style.background=delta>0?'var(--green-soft)':'var(--red-soft)';
+    badge.style.color=delta>0?'var(--green)':'var(--red)';
+    badge.style.border=`1px solid ${delta>0?'var(--green)':'var(--red)'}`;
+  }else{badge.style.display='none';}
+
+  const gap=total-LIVE.leaderBid;
+  const vsEl=document.getElementById('vs-leader-display'),vsSub=document.getElementById('vs-leader-sub');
+  if(gap>0){vsEl.textContent=`+${fmt(gap)}`;vsEl.style.color='var(--red)';vsSub.textContent='behind';}
+  else{vsEl.textContent=`−${fmt(Math.abs(gap))}`;vsEl.style.color='var(--green)';vsSub.textContent='leading';}
+}
+
+function openConfirm(){
+  const total=supAmounts.reduce((a,b)=>a+b,0),delta=supBaseline-total;
+  document.getElementById('confirm-total').textContent=fmtFull(total);
+  const cdEl=document.getElementById('confirm-delta');
+  cdEl.textContent=delta>0?`↓ ${fmt(delta)} lower`:`↑ ${fmt(Math.abs(delta))} higher`;
+  cdEl.style.color=delta>0?'var(--green)':'var(--red)';
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+function closeConfirm(){document.getElementById('confirm-modal').classList.add('hidden');}
+
+function submitBid(){
+  closeConfirm();
+  const total=supAmounts.reduce((a,b)=>a+b,0);
+  bidCount++;
+  document.getElementById('latest-bid-display').textContent=fmt(total);
+  document.getElementById('bid-count-display').textContent=`${bidCount} bids placed`;
+  document.getElementById('toast-sub-text').textContent=fmtFull(total)+' · now live';
+  const toast=document.getElementById('sup-toast');
+  toast.classList.remove('hidden');
+  setTimeout(()=>toast.classList.add('hidden'),3000);
+}
+
+function openMsg(){document.getElementById('msg-modal').classList.remove('hidden');}
+function closeMsgModal(){document.getElementById('msg-modal').classList.add('hidden');}
+function sendMsg(){closeMsgModal();document.getElementById('msg-input').value='';}
+
+function updateCountdown(){
+  const left=Math.max(0,LIVE.endTime-Date.now());
+  const m=Math.floor(left/60000),s=Math.floor((left%60000)/1000);
+  const str=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const urgent=m<10;
+  ['s-timer','s2-timer'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=str;});
+  ['s-timer-box','s2-timer-box'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('urgent',urgent);});
+}
+
+renderSupBidItems();
+updateCountdown();
+setInterval(updateCountdown,1000);
+</script>
+</body>
+</html>
