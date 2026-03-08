@@ -62,7 +62,7 @@ export function RebidSuggestionScreen({ fluid = false }: { fluid?: boolean }) {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 700, color: C.green }}>⭐ Beat by 1%</div>
-              <div style={{ fontSize: 11, color: C.green, marginTop: 2 }}>Recommended — takes the lead</div>
+              <div style={{ fontSize: 11, color: C.green, marginTop: 2 }}>Recommended, takes the lead</div>
             </div>
             <span style={{ fontSize: 16, fontWeight: 800, color: C.green }}>₱643,203</span>
           </div>

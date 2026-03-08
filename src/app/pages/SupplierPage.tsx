@@ -70,7 +70,7 @@ export default function SupplierPage() {
             <div className="sup-nav-title" style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, overflow: 'hidden' }}>
               <div style={{ width: 28, height: 28, borderRadius: 8, background: C.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>🏢</div>
               <span style={{ fontSize: 15, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Supplier Journey</span>
-              <span className="sub">— Supplier X</span>
+              <span className="sub">: Supplier X</span>
             </div>
           </div>
           <div className="sup-nav-actions">
@@ -93,10 +93,10 @@ export default function SupplierPage() {
           eAuction Mobile App · Supplier Experience
         </div>
         <h1 style={{ color: 'white', letterSpacing: '-0.5px', marginBottom: 10 }}>
-          Supplier Journey — Supplier X
+          Supplier Journey: Supplier X
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: 560, margin: '0 auto' }}>
-          Receive the invitation, review auction details, place competitive bids, track rank — and aim to win the contract.
+          Receive the invitation, review auction details, place competitive bids, track ranking, and aim to win the contract.
         </p>
       </div>
 
@@ -106,7 +106,7 @@ export default function SupplierPage() {
         <SectionHeader
           eyebrow="Section 1 · Interactive Flow"
           title="Invite to Bid Setup"
-          sub="Click through the complete supplier journey — from receiving the email invitation and reviewing auction details, to submitting live bids and seeing your rank update in real-time."
+          sub="Click through the complete supplier journey, from receiving the email invitation and reviewing auction details, to submitting live bids and seeing your rank update in real time."
         />
 
         {/* Flow steps indicator */}
@@ -139,7 +139,7 @@ export default function SupplierPage() {
         <SectionHeader
           eyebrow="Section 2 · Screen Gallery"
           title="Other Supplier Screens"
-          sub="Additional supplier-facing screens — smart rebid strategies, real-time alerts & notifications, and full bid history to track performance."
+          sub="Additional supplier-facing screens: smart rebid strategies, real-time alerts and notifications, and full bid history to track performance."
         />
 
         <style>{`

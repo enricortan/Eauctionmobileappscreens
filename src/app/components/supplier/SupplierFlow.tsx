@@ -25,7 +25,7 @@ function EmailScreen({ onAccept }: { onAccept: () => void }) {
       {/* Email meta */}
       <div style={{ background: 'white', padding: '14px 20px', borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 }}>
-          You've been invited to bid — IT Equipment Procurement
+          You've been invited to bid: IT Equipment Procurement
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 34, height: 34, borderRadius: '50%', background: C.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: C.accent, flexShrink: 0 }}>A</div>
@@ -388,7 +388,7 @@ function BidConfirmedScreen({ submittedTotal, timeLeft, onImprove }: { submitted
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{fmtFull(submittedTotal)}</div>
               <div style={{ fontSize: 12, color: C.green, marginTop: 3 }}>↓ {fmt(654000 - submittedTotal)} lower than last bid</div>
-              <div style={{ fontSize: 11, color: C.textSoft, marginTop: 2 }}>Now leading — ₱11.5K ahead of #2</div>
+              <div style={{ fontSize: 11, color: C.textSoft, marginTop: 2 }}>Now leading, ₱11.5K ahead of #2</div>
             </div>
           </div>
         </div>
@@ -458,10 +458,10 @@ export default function SupplierFlow() {
   }, []);
 
   const getLabel = () => {
-    if (screen === 0) return '📧 Supplier — 1. Receive Invite';
-    if (screen === 1) return '📋 Supplier — 2. Review Auction Details';
-    if (screen === 2) return '📊 Supplier — 3. Submit Bid (Live)';
-    return '✅ Supplier — 4. Bid Confirmed';
+    if (screen === 0) return '📧 Supplier: 1. Receive Invite';
+    if (screen === 1) return '📋 Supplier: 2. Review Auction Details';
+    if (screen === 2) return '📊 Supplier: 3. Submit Bid (Live)';
+    return '✅ Supplier: 4. Bid Confirmed';
   };
   const getSub = () => {
     if (screen === 0) return 'Email notification with auction details & CTA';

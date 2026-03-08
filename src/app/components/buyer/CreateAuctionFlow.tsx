@@ -13,7 +13,7 @@ const defaultItems: Item[] = [
   { id: 1, name: 'Laptops', spec: '4GB RAM, 1TB HDD', qty: 100, unit: 'units', budget: 55000 },
   { id: 2, name: 'Laptop Bags', spec: 'Standard carry bag', qty: 100, unit: 'units', budget: 4000 },
   { id: 3, name: 'Desktops', spec: '8GB RAM, 1TB HDD, 15" LCD', qty: 2000, unit: 'units', budget: 620000 },
-  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'years', budget: 120000 },
+  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'units', budget: 120000 },
 ];
 const defaultSuppliers: Supplier[] = [
   { id: 1, name: 'Supplier X', email: 'supplierx@company.com' },
@@ -366,7 +366,7 @@ export default function CreateAuctionFlow() {
   const launched = step === 4;
 
   return (
-    <PhoneFrame label="💼 Buyer — Create Auction" sublabel="Steps: Details → Items → Suppliers → Review & Launch">
+    <PhoneFrame label="💼 Buyer: Create Auction" sublabel="Steps: Details → Items → Suppliers → Review & Launch">
       {/* Header */}
       <PhoneSection>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 20px' }}>

@@ -25,7 +25,7 @@ function EmailScreen({ onAccept }: { onAccept: () => void }) {
 
       <div style={{ background: 'white', padding: '14px 20px', borderBottom: `1px solid ${C.border}`, flexShrink: 0 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 8 }}>
-          You've been invited to bid — IT Equipment Procurement
+          You've been invited to bid: IT Equipment Procurement
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <div style={{ width: 34, height: 34, borderRadius: '50%', background: C.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: C.accent, flexShrink: 0 }}>A</div>
@@ -213,7 +213,7 @@ function BiddingScreen({ amounts, setAmounts, onSubmit, onBack, timeLeft }: {
             <div style={{ display: 'flex' }}>
               <div style={{ flex: 1, textAlign: 'center' as const, paddingRight: 14, borderRight: `1px solid ${C.border}` }}>
                 <div style={{ fontSize: 11, fontWeight: 600, color: C.textSoft, letterSpacing: 1, marginBottom: 6 }}>MY RANK</div>
-                <div style={{ width: 40, height: 40, borderRadius: 10, background: C.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: C.accent, margin: '0 auto 4px' }}>#2</div>
+                <div style={{ width: 40, height: 40, borderRadius: 10, background: isLeading ? C.greenSoft : C.redSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, fontWeight: 800, color: isLeading ? C.green : C.red, margin: '0 auto 4px' }}>{isLeading ? '#1' : '#2'}</div>
                 <div style={{ fontSize: 10, color: C.textSoft }}>of 3</div>
               </div>
               <div style={{ flex: 2, paddingLeft: 14, paddingRight: 14, borderRight: `1px solid ${C.border}` }}>
@@ -369,14 +369,14 @@ function BidConfirmedScreen({ submittedTotal, submittedAmounts, timeLeft, onImpr
       </PhoneSection>
 
       <div style={{ flex: 1, overflowY: 'auto', background: C.bg, scrollbarWidth: 'none' as const, padding: '16px 16px 0' }}>
-        {/* Submission banner — always green (bid was accepted) */}
+        {/* Submission banner */}
         <div style={{ background: bannerBg, borderRadius: 16, padding: '16px 18px', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ width: 44, height: 44, borderRadius: 12, background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>
             {isLeading ? '✓' : '⚠️'}
           </div>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: 'white' }}>
-              {isLeading ? 'Bid submitted — You\'re leading!' : 'Bid submitted — You\'re behind'}
+              {isLeading ? 'Bid submitted. You\'re leading!' : 'Bid submitted. You\'re behind.'}
             </div>
             <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)', marginTop: 3 }}>
               {isLeading
@@ -418,22 +418,31 @@ function BidConfirmedScreen({ submittedTotal, submittedAmounts, timeLeft, onImpr
             </div>
           ) : (
             <div style={{ marginTop: 12, padding: '8px 10px', borderRadius: 10, background: C.redSoft, fontSize: 12, color: C.red, fontWeight: 600 }}>
-              ↑ {fmt(submittedTotal - prevBid)} higher than your previous bid (₱{prevBid.toLocaleString()}) — this weakens your position
+              ↑ {fmt(submittedTotal - prevBid)} higher than your previous bid (₱{prevBid.toLocaleString()}), which weakens your position
             </div>
           )}
         </div>
 
         <Card>
           <div style={{ fontSize: 13, fontWeight: 700, color: C.text, marginBottom: 10 }}>Submitted Bid Breakdown</div>
-          {LIVE_ITEMS.map((item, idx) => (
-            <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
-              <span style={{ color: C.textMid }}>{item.name}</span>
-              <span style={{ fontWeight: 600, color: C.text }}>{fmtFull(submittedAmounts[idx])}</span>
-            </div>
-          ))}
+          {LIVE_ITEMS.map((item, idx) => {
+            const itemIsCompetitive = submittedAmounts[idx] <= item.bestBid;
+            return (
+              <div key={item.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                <div>
+                  <span style={{ color: C.textMid }}>{item.name}</span>
+                  {itemIsCompetitive
+                    ? <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 600, color: C.green }}>✓ best</span>
+                    : <span style={{ marginLeft: 6, fontSize: 10, fontWeight: 600, color: C.red }}>↑ not best</span>
+                  }
+                </div>
+                <span style={{ fontWeight: 600, color: itemIsCompetitive ? C.green : C.red }}>{fmtFull(submittedAmounts[idx])}</span>
+              </div>
+            );
+          })}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: 10, borderTop: `2px solid ${C.border}`, marginTop: 4 }}>
             <span style={{ fontSize: 13, fontWeight: 700, color: C.text }}>Total</span>
-            <span style={{ fontSize: 16, fontWeight: 800, color: isLeading ? C.green : C.text }}>{fmtFull(submittedTotal)}</span>
+            <span style={{ fontSize: 16, fontWeight: 800, color: isLeading ? C.green : C.red }}>{fmtFull(submittedTotal)}</span>
           </div>
         </Card>
 

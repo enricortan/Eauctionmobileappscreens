@@ -24,7 +24,7 @@ const defaultItems: Item[] = [
   { id: 1, name: 'Laptops', spec: '4GB RAM, 1TB HDD', qty: 100, unit: 'units', budget: 55000 },
   { id: 2, name: 'Laptop Bags', spec: 'Standard carry bag', qty: 100, unit: 'units', budget: 4000 },
   { id: 3, name: 'Desktops', spec: '8GB RAM, 1TB HDD, 15" LCD', qty: 2000, unit: 'units', budget: 620000 },
-  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'years', budget: 120000 },
+  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'units', budget: 120000 },
 ];
 const defaultSuppliers: Supplier[] = [
   { id: 1, name: 'Supplier X', email: 'supplierx@company.com' },
@@ -465,7 +465,7 @@ function MonitorView({ onReset }: { onReset: () => void }) {
           <>
             <div style={{ margin: '12px 12px 0', background: C.accentSoft, borderRadius: 12, padding: '10px 14px', display: 'flex', gap: 10, alignItems: 'center' }}>
               <div style={{ width: 6, height: 6, borderRadius: 3, background: C.accent, flexShrink: 0 }} />
-              <div style={{ fontSize: 12, color: C.accent }}>Supplier Y submitted a new bid — now <strong>₱4,300 ahead</strong></div>
+              <div style={{ fontSize: 12, color: C.accent }}>Supplier Y submitted a new bid, now <strong>₱4,300 ahead</strong></div>
             </div>
             <div style={{ padding: '12px 12px 0' }}>
               {LIVE.suppliers.map(sup => (
@@ -514,7 +514,7 @@ function MonitorView({ onReset }: { onReset: () => void }) {
               <div style={{ fontSize: 18, fontWeight: 700, color: C.text, marginBottom: 4 }}>Award Bid</div>
               <div style={{ fontSize: 13, color: C.textMid, marginBottom: 18 }}>Confirm award to leading supplier</div>
               <div style={{ background: C.greenSoft, borderRadius: 12, padding: 14, marginBottom: 16, border: `1px solid rgba(12,158,106,0.2)` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: C.green, marginBottom: 4 }}>Supplier Y — Leading Bid</div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: C.green, marginBottom: 4 }}>Supplier Y: Leading Bid</div>
                 <div style={{ fontSize: 22, fontWeight: 800, color: C.text }}>{fmt(bestBid)}</div>
                 <div style={{ fontSize: 12, color: C.green, marginTop: 4 }}>{savings}% below budget</div>
               </div>

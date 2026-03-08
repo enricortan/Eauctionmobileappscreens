@@ -133,7 +133,7 @@ const ITEMS_DATA = [
   { id: 1, name: 'Laptops', spec: '4GB RAM, 1TB HDD', qty: 100, unit: 'units', budget: 55000 },
   { id: 2, name: 'Laptop Bags', spec: 'Standard carry bag', qty: 100, unit: 'units', budget: 4000 },
   { id: 3, name: 'Desktops', spec: '8GB RAM, 1TB HDD, 15" LCD', qty: 2000, unit: 'units', budget: 620000 },
-  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'years', budget: 120000 },
+  { id: 4, name: 'Desktop Warranty', spec: '3-Year coverage', qty: 2000, unit: 'units', budget: 120000 },
 ];
 
 function ItemsScreen() {
@@ -419,7 +419,7 @@ export default function BuyerScreensPage() {
             <div className="bscr-nav-sep" style={{ width: 1, height: 20, background: C.border, flexShrink: 0 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <div style={{ width: 26, height: 26, borderRadius: 7, background: C.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>💼</div>
-              <span style={{ fontSize: 14, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Buyer — All Screens</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Buyer: All Screens</span>
             </div>
           </div>
           <span className="bscr-badge">9 Screens · Static Layout</span>
@@ -431,22 +431,26 @@ export default function BuyerScreensPage() {
         <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: 12 }}>Buyer Journey · Screen Reference</div>
         <h1 style={{ color: 'white', letterSpacing: '-0.5px', marginBottom: 10 }}>All Buyer Screens</h1>
         <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: 560, margin: '0 auto' }}>
-          Complete static layout of every screen in the buyer flow — from creating an auction to monitoring bids and awarding the winner.
+          Complete static layout of every screen in the buyer flow, from creating an auction to monitoring bids and awarding the winner.
         </p>
       </div>
 
-      <div style={{ maxWidth: 1600, margin: '0 auto', padding: '56px 32px' }}>
+      <div style={{ maxWidth: 1600, margin: '0 auto', padding: '64px 24px' }}>
 
         <style>{`
           .screens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-          @media (max-width: 600px) { .screens-grid { grid-template-columns: 1fr; gap: 16px; } }
+          @media (max-width: 600px) {
+            .screens-grid { grid-template-columns: 1fr; gap: 16px; }
+            .screens-grid > div { width: 100%; }
+            .screens-grid > div > div { width: 100% !important; }
+          }
         `}</style>
 
         {/* Section A: Create Auction */}
         <SectionHeading
           number="A"
           title="Create Auction Flow"
-          sub="5 screens — Auction Details → Items → Suppliers → Review → Launched"
+          sub="5 screens: Auction Details, Items, Suppliers, Review, and Launched"
           color={C.accent}
         />
 
@@ -471,8 +475,8 @@ export default function BuyerScreensPage() {
         {/* Section B: Monitor & Control */}
         <SectionHeading
           number="B"
-          title="Monitor & Control"
-          sub="4 screens — Live Dashboard, Supplier Rankings, Item Comparison, Auction Controls"
+          title="Monitor and Control"
+          sub="4 screens: Live Dashboard, Supplier Rankings, Item Comparison, and Auction Controls"
           color={C.green}
         />
 

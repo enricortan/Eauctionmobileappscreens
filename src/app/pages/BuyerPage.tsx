@@ -71,7 +71,7 @@ export default function BuyerPage() {
             <div className="buyer-nav-title" style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0, overflow: 'hidden' }}>
               <div style={{ width: 28, height: 28, borderRadius: 8, background: C.accentSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, flexShrink: 0 }}>💼</div>
               <span style={{ fontSize: 15, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Buyer Journey</span>
-              <span className="sub">— Mr. Buyer</span>
+              <span className="sub">: Mr. Buyer</span>
             </div>
           </div>
           <div className="buyer-nav-actions">
@@ -94,10 +94,10 @@ export default function BuyerPage() {
           eAuction Mobile App · Buyer Experience
         </div>
         <h1 style={{ color: 'white', letterSpacing: '-0.5px', marginBottom: 10 }}>
-          Buyer Journey — Mr. Buyer
+          Buyer Journey: Mr. Buyer
         </h1>
         <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: 560, margin: '0 auto' }}>
-          Create an auction, monitor live bids, manage suppliers, and award the winning bid — all from a mobile phone.
+          Create an auction, monitor live bids, manage suppliers, and award the winning bid, all from a mobile phone.
         </p>
       </div>
 
@@ -107,7 +107,7 @@ export default function BuyerPage() {
         <SectionHeader
           eyebrow="Section 1 · Interactive Flow"
           title="Create Auction"
-          sub="Click through the 4-step process that Mr. Buyer uses to set up the IT Equipment Procurement auction — from details and items to inviting suppliers and launching."
+          sub="Click through the 4-step process that Mr. Buyer uses to set up the IT Equipment Procurement auction, covering details and items, inviting suppliers, and launching."
         />
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>

@@ -26,6 +26,7 @@ export function PhoneFrame({ children, label, sublabel, minHeight = 812, fluid =
       )}
       <div style={{
         width: fluid ? '100%' : 375,
+        maxWidth: '100%',
         background: C.bg,
         overflow: 'hidden',
         boxShadow: fluid
@@ -68,7 +69,7 @@ export function PhoneBody({ children, style }: { children: React.ReactNode; styl
 
 export function PhoneFooter({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: C.surface, borderTop: `1px solid ${C.border}`, padding: '12px 20px 32px', flexShrink: 0 }}>
+    <div style={{ background: C.surface, borderTop: `1px solid ${C.border}`, padding: '12px 20px', flexShrink: 0 }}>
       {children}
     </div>
   );

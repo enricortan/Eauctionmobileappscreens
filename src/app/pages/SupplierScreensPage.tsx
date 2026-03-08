@@ -178,7 +178,7 @@ function LiveBiddingScreen() {
   const gap = total - 649700;
 
   return (
-    <PhoneFrame label="Screen 3" sublabel="Live Bidding — Submit Bid" minHeight={820}>
+    <PhoneFrame label="Screen 3" sublabel="Live Bidding: Submit Bid" minHeight={820}>
       <PhoneSection>
         <div style={{ padding: '18px 20px 0' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -282,7 +282,7 @@ function LiveBiddingScreen() {
 // ─── Screen 3b: Bid Confirm Modal (overlaid state) ───
 function BidConfirmModalScreen() {
   return (
-    <PhoneFrame label="Screen 3b" sublabel="Live Bidding — Confirm Modal" minHeight={820}>
+    <PhoneFrame label="Screen 3b" sublabel="Live Bidding: Confirm Modal" minHeight={820}>
       <PhoneSection>
         <div style={{ padding: '18px 20px 0' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -336,7 +336,7 @@ const CONFIRMED_TOTAL = CONFIRMED_BREAKDOWN.reduce((a, b) => a + b, 0);
 
 function BidConfirmedScreen() {
   return (
-    <PhoneFrame label="Screen 4" sublabel="Bid Confirmed — #1 Rank" minHeight={780}>
+    <PhoneFrame label="Screen 4" sublabel="Bid Confirmed, #1 Rank" minHeight={780}>
       <PhoneSection>
         <div style={{ padding: '18px 20px 14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -369,7 +369,7 @@ function BidConfirmedScreen() {
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: C.text }}>{fmtFull(CONFIRMED_TOTAL)}</div>
               <div style={{ fontSize: 12, color: C.green, marginTop: 3 }}>↓ {fmt(654000 - CONFIRMED_TOTAL)} lower than last bid</div>
-              <div style={{ fontSize: 11, color: C.textSoft, marginTop: 2 }}>Now leading — ₱11.5K ahead of #2</div>
+              <div style={{ fontSize: 11, color: C.textSoft, marginTop: 2 }}>Now leading, ₱11.5K ahead of #2</div>
             </div>
           </div>
         </div>
@@ -467,7 +467,7 @@ export default function SupplierScreensPage() {
             <div className="sscr-nav-sep" style={{ width: 1, height: 20, background: C.border, flexShrink: 0 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 0 }}>
               <div style={{ width: 26, height: 26, borderRadius: 7, background: C.greenSoft, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, flexShrink: 0 }}>🏢</div>
-              <span style={{ fontSize: 14, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Supplier — All Screens</span>
+              <span style={{ fontSize: 14, fontWeight: 700, color: C.text, whiteSpace: 'nowrap' }}>Supplier: All Screens</span>
             </div>
           </div>
           <span className="sscr-badge">7 Screens · Static Layout</span>
@@ -479,22 +479,26 @@ export default function SupplierScreensPage() {
         <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.5)', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: 12 }}>Supplier Journey · Screen Reference</div>
         <h1 style={{ color: 'white', letterSpacing: '-0.5px', marginBottom: 10 }}>All Supplier Screens</h1>
         <p style={{ color: 'rgba(255,255,255,0.75)', maxWidth: 560, margin: '0 auto' }}>
-          Complete static layout of every screen in the supplier flow — from receiving the email invite to submitting winning bids and tracking history.
+          Complete static layout of every screen in the supplier flow, from receiving the email invitation to submitting winning bids and tracking history.
         </p>
       </div>
 
-      <div style={{ maxWidth: 1600, margin: '0 auto', padding: '56px 32px' }}>
+      <div className="sscr-content" style={{ maxWidth: 1600, margin: '0 auto', padding: '64px 24px' }}>
 
         <style>{`
           .supplier-screens-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
-          @media (max-width: 600px) { .supplier-screens-grid { grid-template-columns: 1fr; gap: 16px; } }
+          @media (max-width: 600px) {
+            .supplier-screens-grid { grid-template-columns: 1fr; gap: 16px; }
+            .supplier-screens-grid > div { width: 100%; }
+            .supplier-screens-grid > div > div { width: 100% !important; }
+          }
         `}</style>
 
-        {/* Section A: Invite → Bid Flow */}
+        {/* Section A: Invite to Bid Flow */}
         <SectionHeading
           number="A"
           title="Invite to Bid Flow"
-          sub="5 screens — Email Invite → Review & Accept → Live Bidding → Confirm Modal → Bid Confirmed"
+          sub="5 screens: Email Invite, Review and Accept, Live Bidding, Confirm Modal, and Bid Confirmed"
           color={C.green}
         />
 
@@ -519,8 +523,8 @@ export default function SupplierScreensPage() {
         {/* Section B: Additional Screens */}
         <SectionHeading
           number="B"
-          title="Strategy & Monitoring"
-          sub="3 screens — Smart Rebid Suggestions, Live Alerts & Notifications, Full Bid History"
+          title="Strategy and Monitoring"
+          sub="3 screens: Smart Rebid Suggestions, Live Alerts and Notifications, and Full Bid History"
           color={C.accent}
         />
 

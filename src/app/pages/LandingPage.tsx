@@ -24,12 +24,12 @@ const ITEMS = [
 ];
 
 const DESIGN_NOTES = [
-  { icon: '🏆', title: 'Smart Rebid Suggestions', desc: 'Beat best by 1%, match best, or custom — suppliers can act fast without calculation.' },
+  { icon: '🏆', title: 'Smart Rebid Suggestions', desc: 'Beat best by 1%, match best, or use a custom amount. Suppliers can act fast without needing to calculate.' },
   { icon: '🛡️', title: 'Anti-Sniping Protection', desc: 'Bids placed in the last 2 minutes auto-extend the auction by 5 minutes.' },
   { icon: '📊', title: 'Real-Time Bid Trends', desc: 'Buyer sees price momentum, supplier activity, and competition aggressiveness at a glance.' },
   { icon: '🔔', title: 'Live Alerts System', desc: 'Rank changes, new best bids, and auction extensions notify suppliers instantly.' },
-  { icon: '📱', title: 'Mobile-First Design', desc: 'Designed for iOS/Android — buyer monitors auction from phone, suppliers bid from anywhere.' },
-  { icon: '📈', title: 'Scalable to 20+ Suppliers', desc: 'Sortable leaderboard, activity feed, and search — handles any number of participants.' },
+  { icon: '📱', title: 'Mobile-First Design', desc: 'Designed for iOS and Android. The buyer monitors the auction from a phone while suppliers bid from anywhere.' },
+  { icon: '📈', title: 'Scalable to 20+ Suppliers', desc: 'Sortable leaderboard, activity feed, and search that handles any number of participants.' },
 ];
 
 export default function LandingPage() {
@@ -132,7 +132,7 @@ export default function LandingPage() {
             <div style={{ fontSize: 11, fontWeight: 700, color: C.textSoft, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 12 }}>Interactive Prototypes</div>
             <h2 style={{ fontSize: 30, fontWeight: 800, color: C.text, letterSpacing: '-0.5px', marginBottom: 12 }}>Two Journeys, One Platform</h2>
             <p style={{ fontSize: 15, color: C.textMid, maxWidth: 540, margin: '0 auto' }}>
-              Explore both sides of the auction experience — the buyer who controls it, and the supplier who competes.
+              Explore both sides of the auction experience: the buyer who controls it and the supplier who competes.
             </p>
           </div>
 
